@@ -1,0 +1,48 @@
+<% include ../partials/header %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="well">
+          <h1><%= pet.title %></h1>
+          <p class="lead">by <a href="#"><%= pet.author.name %></a></p>
+          <p><span class="glyphicon glyphicon-time"></span><%= moment(pet.created).format('YYYY MMMM Do')  %></p>
+          <div class="thumbnail">
+            <img class="img-responsive" src="<%= pet.image %>">
+          </div>
+          <p><%= pet.description %></p>
+
+          <div class="text-right">
+          <% if( currentUser && pet.author.id.equals(currentUser._id)){  %>
+            <a class="btn btn-warning" href="/pets/<%= pet._id %>/edit">編輯</a>
+            <form class="delete-form" action="/pets/<%= pet._id %>?_method=DELETE" method="POST">
+              <button class="btn btn-danger">刪除</button>
+            </form>
+          <% } %>
+            <a class="btn btn-success " href="/pets/<%= pet._id %>/comments/new">留言</a>
+          </div>
+        </div>
+        <div class="well">
+          <% pet.comments.forEach( (comment) => { %>
+            <div class="media">
+              <div class="media-body">
+                <h4 class="media-heading"><%= comment.author.name %>
+                  <small><%= moment(comment.created).fromNow() %></small>
+                </h4>
+                <p><%= comment.text %></p>
+              </div>
+              <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
+                <a class="btn btn-xs btn-warning" 
+                   href="/pets/<%=pet._id %>/comments/<%=comment._id %>/edit">修改</a>
+                <form class="delete-form" action="/pets/<%=pet._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
+                  <input type="submit" class="btn btn-xs btn-danger" value="刪除">
+                </form>
+              <% } %> 
+            </div>
+          <% }) %> 
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<% include ../partials/footer %>
